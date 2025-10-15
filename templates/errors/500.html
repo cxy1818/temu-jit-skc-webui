@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}服务器错误 - SKC管理系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-server fa-5x text-danger mb-4"></i>
+                <h1 class="display-4">500</h1>
+                <h4 class="mb-3">服务器内部错误</h4>
+                <p class="text-muted mb-4">抱歉，服务器遇到了一个错误，无法完成您的请求。</p>
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>返回首页
+                    </a>
+                    <button class="btn btn-outline-secondary" onclick="location.reload()">
+                        <i class="fas fa-refresh me-2"></i>重新加载
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

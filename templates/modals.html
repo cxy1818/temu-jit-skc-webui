@@ -1,0 +1,254 @@
+<!-- 创建项目模态框 -->
+<div class="modal fade" id="createProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>创建新项目
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createProjectForm">
+                    <div class="mb-3">
+                        <label for="newProjectName" class="form-label">项目名称</label>
+                        <input type="text" class="form-control" id="newProjectName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newProjectDescription" class="form-label">项目描述</label>
+                        <textarea class="form-control" id="newProjectDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createProject()">
+                    <i class="fas fa-plus me-2"></i>创建
+                    <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量更新SKC状态模态框 -->
+<div class="modal fade" id="batchUpdateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>批量修改SKC状态
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="batchUpdateForm">
+                    <div class="mb-3">
+                        <label for="batchUpdateSKCs" class="form-label">SKC代码 (空格隔开)</label>
+                        <textarea class="form-control" id="batchUpdateSKCs" rows="4" placeholder="输入要修改的SKC代码，用空格隔开" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="batchUpdateStatus" class="form-label">新状态</label>
+                        <select class="form-select" id="batchUpdateStatus" required>
+                            <option value="核价通过">核价通过</option>
+                            <option value="拉过库存">拉过库存</option>
+                            <option value="已下架">已下架</option>
+                            <option value="价格待定">价格待定</option>
+                            <option value="减少库存为0">减少库存为0</option>
+                            <option value="改过体积">改过体积</option>
+                            <option value="价格错误">价格错误</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-warning" onclick="batchUpdateSKCs()">
+                    <i class="fas fa-edit me-2"></i>更新
+                    <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量删除SKC模态框 -->
+<div class="modal fade" id="batchDeleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-trash me-2"></i>批量删除SKC
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>警告：</strong>删除操作不可恢复，请谨慎操作！
+                </div>
+                <form id="batchDeleteForm">
+                    <div class="mb-3">
+                        <label for="batchDeleteSKCs" class="form-label">SKC代码 (空格隔开)</label>
+                        <textarea class="form-control" id="batchDeleteSKCs" rows="4" placeholder="输入要删除的SKC代码，用空格隔开" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" onclick="batchDeleteSKCs()">
+                    <i class="fas fa-trash me-2"></i>删除
+                    <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑项目模态框 -->
+<div class="modal fade" id="editProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>编辑项目
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProjectForm">
+                    <input type="hidden" id="editProjectId">
+                    <div class="mb-3">
+                        <label for="editProjectName" class="form-label">项目名称</label>
+                        <input type="text" class="form-control" id="editProjectName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProjectDescription" class="form-label">项目描述</label>
+                        <textarea class="form-control" id="editProjectDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="updateProject()">
+                    <i class="fas fa-save me-2"></i>保存
+                    <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>确认删除
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteConfirmText">确定要删除这个项目吗？此操作不可恢复。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>确认删除
+                    <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 图片预览模态框 -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-image me-2"></i>图片预览
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="previewImage" class="img-fluid" style="max-height: 500px;">
+                <div class="mt-3">
+                    <p class="mb-1"><strong>文件名：</strong><span id="previewFileName"></span></p>
+                    <p class="mb-1"><strong>上传时间：</strong><span id="previewUploadTime"></span></p>
+                    <p class="mb-0"><strong>文件大小：</strong><span id="previewFileSize"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-danger" onclick="deleteImage()">
+                    <i class="fas fa-trash me-2"></i>删除图片
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Excel导入进度模态框 -->
+<div class="modal fade" id="importProgressModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-upload me-2"></i>导入Excel
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">导入中...</span>
+                    </div>
+                    <p id="importProgressText">正在处理Excel文件，请稍候...</p>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 0%" id="importProgressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 导出历史模态框 -->
+<div class="modal fade" id="exportHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-history me-2"></i>导出历史
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>文件名</th>
+                                <th>导出时间</th>
+                                <th>文件大小</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="exportHistoryTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    <i class="fas fa-info-circle me-2"></i>暂无导出记录
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

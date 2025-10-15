@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}注册 - SKC管理系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>用户注册
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="registerForm">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-text" id="usernameHelp"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">邮箱</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-text" id="emailHelp"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                                <i class="fas fa-eye" id="passwordToggle"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">密码至少6位，包含字母和数字</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">确认密码</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password')">
+                                <i class="fas fa-eye" id="confirmPasswordToggle"></i>
+                            </button>
+                        </div>
+                        <div class="form-text" id="confirmPasswordHelp"></div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>注册
+                            <span class="loading spinner-border spinner-border-sm ms-2"></span>
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <p class="mb-0">已有账户？ 
+                        <a href="{{ url_for('auth.login') }}" class="text-decoration-none">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId) {
+    const passwordInput = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(fieldId + 'Toggle');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// 实时验证
+document.getElementById('username').addEventListener('blur', function() {
+    const username = this.value.trim();
+    const helpText = document.getElementById('usernameHelp');
+    
+    if (username.length < 3) {
+        helpText.innerHTML = '<span class="text-danger">用户名长度至少3位</span>';
+        return;
+    }
+    
+    fetch(`{{ url_for('auth.check_username') }}?username=${encodeURIComponent(username)}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.available) {
+            helpText.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> 用户名可用</span>';
+        } else {
+            helpText.innerHTML = `<span class="text-danger"><i class="fas fa-times"></i> ${data.message}</span>`;
+        }
+    })
+    .catch(() => {
+        helpText.innerHTML = '';
+    });
+});
+
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value.trim();
+    const helpText = document.getElementById('emailHelp');
+    
+    if (!email) return;
+    
+    fetch(`{{ url_for('auth.check_email') }}?email=${encodeURIComponent(email)}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.available) {
+            helpText.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> 邮箱可用</span>';
+        } else {
+            helpText.innerHTML = `<span class="text-danger"><i class="fas fa-times"></i> ${data.message}</span>`;
+        }
+    })
+    .catch(() => {
+        helpText.innerHTML = '';
+    });
+});
+
+document.getElementById('confirm_password').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    const helpText = document.getElementById('confirmPasswordHelp');
+    
+    if (confirmPassword && password !== confirmPassword) {
+        helpText.innerHTML = '<span class="text-danger">两次输入的密码不一致</span>';
+    } else if (confirmPassword && password === confirmPassword) {
+        helpText.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> 密码一致</span>';
+    } else {
+        helpText.innerHTML = '';
+    }
+});
+
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    showLoading(submitBtn);
+    
+    const formData = new FormData(this);
+    
+    fetch('{{ url_for("auth.register") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            return response.text();
+        }
+    })
+    .then(html => {
+        if (html) {
+            document.body.innerHTML = html;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('注册失败，请重试', 'danger');
+    })
+    .finally(() => {
+        hideLoading(submitBtn);
+    });
+});
+</script>
+{% endblock %}
