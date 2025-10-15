@@ -1,5 +1,5 @@
 # SKC管理系统 Web版
-
+temu平台jit模式，skc管理，支持多种商品状态，如下架，拉过库存等
 这是一个基于Flask的SKC（Stock Keeping Code）管理系统，支持多用户、高并发访问，提供完整的Web界面来管理产品和SKC数据。
 
 ## 功能特性
